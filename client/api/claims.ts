@@ -5,10 +5,14 @@ import {
   Queue,
 } from "@shared/api";
 
-// Get API base URL from environment, fallback to /api for relative URLs
-const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+// Get API base URL from environment
+// In development: Will be /api (relative) which works with vite dev server proxy
+// In production: Will be /api (relative) which uses the same domain
+// Format: empty string (same domain) or full URL (different domain)
+const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 
-// Ensure API_BASE_URL doesn't have trailing slash
+// Build the API base URL - if env is /api, use it as is
+// Otherwise treat as domain/port and keep as is
 export const API_BASE_URL = VITE_API_BASE.replace(/\/$/, "");
 
 export interface ClaimUploadData {
