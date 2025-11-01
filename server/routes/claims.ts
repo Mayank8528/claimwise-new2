@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { ClaimResponse, ClaimDetailResponse } from "@shared/api";
+import { ClaimResponse, ClaimDetailResponse, Queue } from "@shared/api";
 
 // Mock data for demonstration
 const mockClaims: ClaimDetailResponse[] = [
