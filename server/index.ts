@@ -45,9 +45,18 @@ export function createServer() {
     next(err);
   });
 
+  // Health check endpoints (useful for deployment monitoring)
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", api: "running", timestamp: new Date().toISOString() });
+  });
+
   // Example API routes
   app.get("/api/ping", (_req, res) => {
-    const ping = process.env.PING_MESSAGE ?? "ping";
+    const ping = process.env.PING_MESSAGE ?? "pong";
     res.json({ message: ping });
   });
 
@@ -61,6 +70,24 @@ export function createServer() {
 
   // Queues route
   app.get("/api/queues", fetchQueues);
+
+  // API 404 handler - only for /api routes
+  app.use("/api", (req: Request, res: Response) => {
+    res.status(404).json({
+      error: "API endpoint not found",
+      path: req.path,
+      method: req.method,
+    });
+  });
+
+  // Global error handler
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error("[ERROR]", err);
+    res.status(err.status || 500).json({
+      error: isDev ? err.message : "Internal server error",
+      ...(isDev && { stack: err.stack }),
+    });
+  });
 
   // WebSocket support will be handled by the dev server
   // For production, you may need to use ws library or similar
