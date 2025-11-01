@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { uploadClaim, ClaimUploadData } from "@/api/claims";
+import { uploadClaim } from "@/api/claims";
 
 export interface UploadProgress {
   loaded: number;
@@ -16,13 +16,11 @@ export const useUpload = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: ClaimUploadData) => {
-      // Note: For real progress tracking, you would need to use XMLHttpRequest
-      // or fetch with streaming. This is a simplified version.
+    mutationFn: async (formData: FormData) => {
       setProgress({ loaded: 0, total: 100, percentage: 0 });
 
       try {
-        const result = await uploadClaim(data);
+        const result = await uploadClaim(formData);
         setProgress({ loaded: 100, total: 100, percentage: 100 });
         return result;
       } catch (error) {
@@ -33,10 +31,10 @@ export const useUpload = () => {
   });
 
   const uploadWithProgress = useCallback(
-    async (data: ClaimUploadData) => {
-      return mutation.mutate(data);
+    async (formData: FormData) => {
+      return mutation.mutate(formData);
     },
-    [mutation]
+    [mutation],
   );
 
   return {

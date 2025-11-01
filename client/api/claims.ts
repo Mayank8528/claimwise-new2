@@ -1,7 +1,19 @@
-import { API_BASE, API_ENDPOINTS } from "./config";
+import {
+  ClaimResponse,
+  ClaimDetailResponse,
+  ReassignData,
+  Queue,
+} from "@shared/api";
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+// Get API base URL from environment
+// In development: Will be /api (relative) which works with vite dev server proxy
+// In production: Will be /api (relative) which uses the same domain
+// Format: empty string (same domain) or full URL (different domain)
+const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
+// Build the API base URL - if env is /api, use it as is
+// Otherwise treat as domain/port and keep as is
+export const API_BASE_URL = VITE_API_BASE.replace(/\/$/, "");
 
 export interface ClaimUploadData {
   fullName?: string;
@@ -17,51 +29,14 @@ export interface ClaimUploadData {
   files?: Record<string, File[]>;
 }
 
-export interface Evidence {
-  source: string;
-  page: number;
-  span: string;
-}
-
-export interface Attachment {
-  filename: string;
-  url: string;
-  size?: string;
-}
-
-export interface ClaimResponse {
-  id: string;
-  claimant: string;
-  policy_no: string;
-  loss_type: string;
-  created_at: string;
-  severity: "Low" | "Medium" | "High" | "Critical";
-  confidence: number;
-  queue: string;
-  status: "Processing" | "Completed" | "Rejected";
-  amount?: string;
-}
-
-export interface ClaimDetailResponse extends ClaimResponse {
-  email: string;
-  description: string;
-  rationale: string;
-  evidence: Evidence[];
-  attachments: Attachment[];
-  assignee?: string;
-}
-
-export interface ReassignData {
-  queue: string;
-  assignee: string;
-  note: string;
-}
-
-export interface Queue {
-  id: string;
-  name: string;
-  assignees?: string[];
-}
+// Re-export shared types for backwards compatibility
+export type {
+  ClaimResponse,
+  ClaimDetailResponse,
+  ReassignData,
+  Queue,
+} from "@shared/api";
+export type { Evidence, Attachment } from "@shared/api";
 
 export interface FetchClaimsParams {
   limit?: number;
@@ -96,7 +71,7 @@ export const fetchClaims = async (params: FetchClaimsParams = {}) => {
   if (params.search) queryParams.append("search", params.search);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/claims?${queryParams.toString()}`
+    `${API_BASE_URL}/api/claims?${queryParams.toString()}`,
   );
 
   if (!response.ok) {
@@ -143,45 +118,4 @@ export const fetchQueues = async () => {
   }
 
   return response.json() as Promise<Queue[]>;
-};
-
-export const getClaims = async () => {
-  const response = await fetch(`${API_BASE}${API_ENDPOINTS.claims.list}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch claims");
-  }
-
-  return response.json() as Promise<ClaimResponse[]>;
-};
-
-export const getClaimDetail = async (id: string) => {
-  const response = await fetch(
-    `${API_BASE}${API_ENDPOINTS.claims.get(id)}`
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch claim detail");
-  }
-
-  return response.json() as Promise<ClaimDetailResponse>;
-};
-
-export const reassignClaim = async (id: string, data: ReassignData) => {
-  const response = await fetch(
-    `${API_BASE}${API_ENDPOINTS.claims.reassign(id)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to reassign claim");
-  }
-
-  return response.json();
 };

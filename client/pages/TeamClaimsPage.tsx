@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import ClaimTable from "@/components/claims/ClaimTable";
 import ReassignModal from "@/components/claims/ReassignModal";
 import { fetchClaims, ClaimResponse } from "@/api/claims";
+import { useClaimsWebSocket } from "@/hooks/useClaimsWebSocket";
 
 const TeamClaimsPage = () => {
   const navigate = useNavigate();
@@ -19,6 +20,19 @@ const TeamClaimsPage = () => {
   useEffect(() => {
     loadClaims();
   }, []);
+
+  useClaimsWebSocket({
+    onClaimCreated: (newClaim) => {
+      setClaims((prev) => [newClaim, ...prev]);
+    },
+    onClaimUpdated: (updatedClaim) => {
+      setClaims((prev) =>
+        prev.map((claim) =>
+          claim.id === updatedClaim.id ? updatedClaim : claim,
+        ),
+      );
+    },
+  });
 
   const loadClaims = async () => {
     setLoading(true);
