@@ -37,3 +37,4 @@ dist-ssr
 .secrets/
 *.key
 *.pem
+.env
