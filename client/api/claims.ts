@@ -1,3 +1,10 @@
+import {
+  ClaimResponse,
+  ClaimDetailResponse,
+  ReassignData,
+  Queue,
+} from "@shared/api";
+
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
@@ -15,51 +22,14 @@ export interface ClaimUploadData {
   files?: Record<string, File[]>;
 }
 
-export interface Evidence {
-  source: string;
-  page: number;
-  span: string;
-}
-
-export interface Attachment {
-  filename: string;
-  url: string;
-  size?: string;
-}
-
-export interface ClaimResponse {
-  id: string;
-  claimant: string;
-  policy_no: string;
-  loss_type: string;
-  created_at: string;
-  severity: "Low" | "Medium" | "High" | "Critical";
-  confidence: number;
-  queue: string;
-  status: "Processing" | "Completed" | "Rejected";
-  amount?: string;
-}
-
-export interface ClaimDetailResponse extends ClaimResponse {
-  email: string;
-  description: string;
-  rationale: string;
-  evidence: Evidence[];
-  attachments: Attachment[];
-  assignee?: string;
-}
-
-export interface ReassignData {
-  queue: string;
-  assignee: string;
-  note: string;
-}
-
-export interface Queue {
-  id: string;
-  name: string;
-  assignees?: string[];
-}
+// Re-export shared types for backwards compatibility
+export type {
+  ClaimResponse,
+  ClaimDetailResponse,
+  ReassignData,
+  Queue,
+} from "@shared/api";
+export type { Evidence, Attachment } from "@shared/api";
 
 export interface FetchClaimsParams {
   limit?: number;
