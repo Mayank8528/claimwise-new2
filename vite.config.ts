@@ -12,6 +12,20 @@ export default defineConfig(({ mode }) => ({
       allow: ["./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
+    // Proxy API requests to Express server
+    // This allows frontend to call /api/* and have them handled by Express middleware
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: false,
+        // API is served by Express middleware on same port
+      },
+      "/ws": {
+        target: "ws://localhost:8080",
+        ws: true,
+        changeOrigin: false,
+      },
+    },
   },
   build: {
     outDir: "dist/spa",
