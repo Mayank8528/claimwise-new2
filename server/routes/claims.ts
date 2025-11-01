@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import { ClaimResponse, ClaimDetailResponse, Queue } from "@shared/api";
+import { ClaimResponse, ClaimDetailResponse } from "@shared/api";
 
-// Mock data for demonstration
+// Mock data for demonstration - in production, this would be a database
 const mockClaims: ClaimDetailResponse[] = [
   {
     id: "CLM-2024-001",
