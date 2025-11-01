@@ -4,7 +4,6 @@ const Toast = () => {
   return (
     <Toaster
       position="top-right"
-      reverseOrder={false}
       theme="dark"
       toastOptions={{
         classNames: {
