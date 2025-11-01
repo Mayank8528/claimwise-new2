@@ -1,5 +1,3 @@
-import { API_BASE, API_ENDPOINTS } from "./config";
-
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
@@ -143,45 +141,4 @@ export const fetchQueues = async () => {
   }
 
   return response.json() as Promise<Queue[]>;
-};
-
-export const getClaims = async () => {
-  const response = await fetch(`${API_BASE}${API_ENDPOINTS.claims.list}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch claims");
-  }
-
-  return response.json() as Promise<ClaimResponse[]>;
-};
-
-export const getClaimDetail = async (id: string) => {
-  const response = await fetch(
-    `${API_BASE}${API_ENDPOINTS.claims.get(id)}`
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch claim detail");
-  }
-
-  return response.json() as Promise<ClaimDetailResponse>;
-};
-
-export const reassignClaim = async (id: string, data: ReassignData) => {
-  const response = await fetch(
-    `${API_BASE}${API_ENDPOINTS.claims.reassign(id)}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to reassign claim");
-  }
-
-  return response.json();
 };
