@@ -5,8 +5,11 @@ import {
   Queue,
 } from "@shared/api";
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+// Get API base URL from environment, fallback to /api for relative URLs
+const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+
+// Ensure API_BASE_URL doesn't have trailing slash
+export const API_BASE_URL = VITE_API_BASE.replace(/\/$/, "");
 
 export interface ClaimUploadData {
   fullName?: string;
