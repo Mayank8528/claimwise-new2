@@ -24,4 +24,16 @@ dist-ssr
 *.sw?
 
 .config/
-!.env
+
+# Environment files
+# .env - committed (default values)
+# .env.development - committed (dev config)
+# .env.production - committed (prod config)
+# .env.local - NOT committed (personal overrides)
+.env.local
+.env.*.local
+
+# Secrets and sensitive data
+.secrets/
+*.key
+*.pem
