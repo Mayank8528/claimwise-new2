@@ -3,11 +3,13 @@
 ## ⚡ Get Running in 5 Minutes
 
 ### 1. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 2. Start Development Server
+
 ```bash
 pnpm dev
 ```
@@ -21,12 +23,15 @@ That's it! 🎉
 ## ✅ Verify Everything Works
 
 ### Check the App Loads
+
 - [ ] Landing page shows "Transform Claims Chaos" heading
 - [ ] Two CTA buttons: "User" and "Team"
 - [ ] No errors in browser console
 
 ### Check API Works
+
 Open new terminal and run:
+
 ```bash
 # Test API health
 curl http://localhost:8080/api/health
@@ -44,14 +49,14 @@ You should see JSON responses (not errors).
 
 ## 🗺️ Navigation
 
-| URL | Purpose |
-|---|---|
-| `/` | Landing page |
-| `/upload` | User claim form |
-| `/upload-confirmation` | Success page |
-| `/team` | Team claims list |
-| `/team/claims/:id` | Claim details |
-| `/dashboard` | Dashboard (placeholder) |
+| URL                    | Purpose                 |
+| ---------------------- | ----------------------- |
+| `/`                    | Landing page            |
+| `/upload`              | User claim form         |
+| `/upload-confirmation` | Success page            |
+| `/team`                | Team claims list        |
+| `/team/claims/:id`     | Claim details           |
+| `/dashboard`           | Dashboard (placeholder) |
 
 ---
 
@@ -92,14 +97,14 @@ shared/                          # Shared code
 
 ## 🔧 Common Commands
 
-| Command | Purpose |
-|---|---|
-| `pnpm dev` | Start dev server (hot reload) |
-| `pnpm build` | Build for production |
-| `pnpm start` | Run production build |
-| `pnpm typecheck` | Check TypeScript |
-| `pnpm test` | Run tests |
-| `pnpm format.fix` | Format code |
+| Command           | Purpose                       |
+| ----------------- | ----------------------------- |
+| `pnpm dev`        | Start dev server (hot reload) |
+| `pnpm build`      | Build for production          |
+| `pnpm start`      | Run production build          |
+| `pnpm typecheck`  | Check TypeScript              |
+| `pnpm test`       | Run tests                     |
+| `pnpm format.fix` | Format code                   |
 
 ---
 
@@ -128,23 +133,27 @@ For other platforms (Vercel, Netlify, Render, Railway), see `DEPLOYMENT.md`
 ## 🆘 Troubleshooting
 
 ### "Failed to fetch" errors?
+
 - Check browser Network tab
 - Verify API calls going to `/api/claims` (not `http://localhost:8000`)
 - Check server is running: `curl http://localhost:8080/api/health`
 
 ### Port 8080 already in use?
+
 ```bash
 # Kill process on port 8080
 lsof -ti:8080 | xargs kill -9
 ```
 
 ### TypeScript errors?
+
 ```bash
 pnpm typecheck
 # Fix any errors shown
 ```
 
 ### Can't install dependencies?
+
 ```bash
 # Clear node_modules and reinstall
 rm -rf node_modules pnpm-lock.yaml
@@ -183,4 +192,3 @@ pnpm install
 ---
 
 Happy coding! 🚀
-

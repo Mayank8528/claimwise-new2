@@ -3,6 +3,7 @@
 ## 🔍 Understanding the Architecture
 
 ### Development Flow
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Your Browser (http://localhost:8080)               │
@@ -26,6 +27,7 @@
 ```
 
 ### Production Flow
+
 ```
 ┌───────���──────────────────────────────┐
 │  User Browser                        │
@@ -46,21 +48,21 @@
 
 ### Local Development
 
-| Service | URL | Port | Purpose |
-|---|---|---|---|
-| Vite Dev Server | http://localhost:8080 | 8080 | Frontend + API proxy |
-| Express API | (integrated) | (same) | API routes |
-| Browser | http://localhost:8080 | 8080 | Access the app |
+| Service         | URL                   | Port   | Purpose              |
+| --------------- | --------------------- | ------ | -------------------- |
+| Vite Dev Server | http://localhost:8080 | 8080   | Frontend + API proxy |
+| Express API     | (integrated)          | (same) | API routes           |
+| Browser         | http://localhost:8080 | 8080   | Access the app       |
 
 **All running on same port!** Vite integrates Express as middleware.
 
 ### Production
 
-| Service | URL | Purpose |
-|---|---|---|
-| Frontend | https://your-app.example.com | React SPA |
-| API | https://your-app.example.com/api | Express API |
-| Health | https://your-app.example.com/api/health | Status check |
+| Service  | URL                                     | Purpose      |
+| -------- | --------------------------------------- | ------------ |
+| Frontend | https://your-app.example.com            | React SPA    |
+| API      | https://your-app.example.com/api        | Express API  |
+| Health   | https://your-app.example.com/api/health | Status check |
 
 **Same domain!** No separate API server needed.
 
@@ -69,6 +71,7 @@
 ## 🔐 Environment Variables Reference
 
 ### File: `.env` (Default, committed)
+
 ```bash
 # API base URL
 VITE_API_BASE_URL=                      # Empty = same domain
@@ -83,6 +86,7 @@ VITE_API_TIMEOUT=30000                  # API timeout (ms)
 ```
 
 ### File: `.env.development` (Local dev, committed)
+
 ```bash
 VITE_API_BASE_URL=/api
 PORT=8080
@@ -91,6 +95,7 @@ VITE_API_TIMEOUT=30000
 ```
 
 ### File: `.env.production` (Production, committed)
+
 ```bash
 VITE_API_BASE_URL=/api
 PORT=8080
@@ -99,6 +104,7 @@ VITE_API_TIMEOUT=30000
 ```
 
 ### File: `.env.local` (Personal overrides, NOT committed)
+
 ```bash
 # Add any local overrides here
 # Not tracked by git
@@ -123,6 +129,7 @@ For Vercel/Netlify, set in dashboard Settings → Environment Variables
 ### Claims Management
 
 #### List All Claims
+
 ```bash
 GET /api/claims
 GET /api/claims?limit=25&offset=0
@@ -144,6 +151,7 @@ GET /api/claims?search=John
 ```
 
 #### Get Claim Details
+
 ```bash
 GET /api/claims/:id
 
@@ -177,6 +185,7 @@ GET /api/claims/CLM-2024-001
 ```
 
 #### Upload New Claim
+
 ```bash
 POST /api/claims/upload
 Content-Type: multipart/form-data
@@ -200,6 +209,7 @@ supporting: <file>
 ```
 
 #### Reassign Claim
+
 ```bash
 POST /api/claims/:id/reassign
 Content-Type: application/json
@@ -220,6 +230,7 @@ Content-Type: application/json
 ### Queue Management
 
 #### List All Queues
+
 ```bash
 GET /api/queues
 
@@ -241,6 +252,7 @@ GET /api/queues
 ### Health & Status
 
 #### Health Check
+
 ```bash
 GET /health
 GET /api/health
@@ -253,6 +265,7 @@ GET /api/health
 ```
 
 #### Ping
+
 ```bash
 GET /api/ping
 
@@ -271,18 +284,20 @@ GET /api/ping
 **Check these in order:**
 
 1. **Verify API endpoint responding**
+
    ```bash
    # Replace with your deployed URL
    curl https://your-app.example.com/api/health
-   
+
    # Should return 200 with JSON
    ```
 
 2. **Check environment variables**
+
    ```bash
    # For Fly.io
    fly env display
-   
+
    # Should show VITE_API_BASE_URL=/api
    ```
 
@@ -293,18 +308,20 @@ GET /api/ping
    - Check request URL (should be `/api/claims`, not `http://localhost:8000`)
 
 4. **Check server logs**
+
    ```bash
    # For Fly.io
    fly logs
-   
+
    # Look for errors or missing routes
    ```
 
 5. **Verify build output**
+
    ```bash
    # Ensure frontend env vars in build
    grep "VITE_API" dist/spa/assets/*.js
-   
+
    # Should show /api in the output
    ```
 
@@ -345,13 +362,13 @@ taskkill /PID <PID> /F
 
 **Common causes and fixes:**
 
-| Issue | Check | Fix |
-|---|---|---|
-| Hardcoded localhost URL | `grep localhost client/api/*.ts` | Use relative URLs `/api` |
-| Wrong API base URL | `.env.production` | Set `VITE_API_BASE_URL=/api` |
-| Missing routes in server | `server/routes/` | Ensure all routes are registered |
-| Frontend not built | `ls -la dist/spa/` | Run `pnpm build` |
-| Backend not starting | `fly logs` | Check for errors in logs |
+| Issue                    | Check                            | Fix                              |
+| ------------------------ | -------------------------------- | -------------------------------- |
+| Hardcoded localhost URL  | `grep localhost client/api/*.ts` | Use relative URLs `/api`         |
+| Wrong API base URL       | `.env.production`                | Set `VITE_API_BASE_URL=/api`     |
+| Missing routes in server | `server/routes/`                 | Ensure all routes are registered |
+| Frontend not built       | `ls -la dist/spa/`               | Run `pnpm build`                 |
+| Backend not starting     | `fly logs`                       | Check for errors in logs         |
 
 ### Symptom: TypeScript Errors
 
@@ -388,13 +405,13 @@ pnpm dev
 
 ### Environment Variable Differences
 
-| Setting | Development | Production | Why |
-|---|---|---|---|
-| `NODE_ENV` | development | production | Affects error messages, logging |
-| `VITE_API_BASE_URL` | `/api` | `/api` | Same in both (relative) |
-| CORS | Allow all | Specific origins | Security |
-| Error logging | Verbose | Minimal | Performance, security |
-| Build output | Source maps | Minified | Size, speed |
+| Setting             | Development | Production       | Why                             |
+| ------------------- | ----------- | ---------------- | ------------------------------- |
+| `NODE_ENV`          | development | production       | Affects error messages, logging |
+| `VITE_API_BASE_URL` | `/api`      | `/api`           | Same in both (relative)         |
+| CORS                | Allow all   | Specific origins | Security                        |
+| Error logging       | Verbose     | Minimal          | Performance, security           |
+| Build output        | Source maps | Minified         | Size, speed                     |
 
 ### API Base URL Options
 
@@ -424,18 +441,21 @@ VITE_API_BASE_URL=https://api.example.com
 ### Fly.io
 
 **Key differences**:
+
 - `PORT` env var is set automatically
 - Environment variables via `fly secrets set`
 - Access logs with `fly logs`
 - Deploy with `fly deploy`
 
 **Important files**:
+
 - `fly.toml` - Fly configuration
 - No special build steps needed
 
 ### Vercel
 
 **Key differences**:
+
 - Static frontend only (no backend)
 - Need separate backend service or serverless functions
 - Environment vars in dashboard
@@ -446,6 +466,7 @@ VITE_API_BASE_URL=https://api.example.com
 ### Netlify
 
 **Key differences**:
+
 - Similar to Vercel (static focus)
 - Netlify Functions for backend (optional)
 - Environment vars in dashboard
@@ -456,6 +477,7 @@ VITE_API_BASE_URL=https://api.example.com
 ### Render / Railway
 
 **Key differences**:
+
 - Full Node.js support
 - `PORT` env var respected
 - Deploy via git or CLI
@@ -468,18 +490,21 @@ VITE_API_BASE_URL=https://api.example.com
 ## 📈 Performance Optimization
 
 ### Frontend
+
 - Built with Vite (fast bundling)
 - React 18 with optimizations
 - Async code splitting enabled
 - CSS minified in production
 
 ### Backend
+
 - Express with middleware (fast)
 - No ORM overhead (mock data)
 - Compression enabled
 - CORS configured for performance
 
 ### Network
+
 - Relative URLs (no redirects)
 - Single domain (no DNS lookups)
 - Keep-alive enabled
@@ -564,4 +589,3 @@ tail -f logs.txt
 - [React Docs](https://react.dev/)
 - [Fly.io Docs](https://fly.io/docs/)
 - [MDN Web Docs](https://developer.mozilla.org/)
-

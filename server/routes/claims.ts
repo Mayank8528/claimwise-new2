@@ -104,7 +104,7 @@ export const fetchClaims: RequestHandler = (req, res) => {
       (claim) =>
         claim.id.toLowerCase().includes(searchLower) ||
         claim.claimant.toLowerCase().includes(searchLower) ||
-        claim.policy_no.toLowerCase().includes(searchLower)
+        claim.policy_no.toLowerCase().includes(searchLower),
     );
   }
 

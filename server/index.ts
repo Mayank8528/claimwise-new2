@@ -51,7 +51,11 @@ export function createServer() {
   });
 
   app.get("/api/health", (_req, res) => {
-    res.json({ status: "ok", api: "running", timestamp: new Date().toISOString() });
+    res.json({
+      status: "ok",
+      api: "running",
+      timestamp: new Date().toISOString(),
+    });
   });
 
   // Example API routes

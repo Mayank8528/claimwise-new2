@@ -5,16 +5,19 @@
 Your application had a critical production deployment issue:
 
 **Problem**: Frontend was hardcoded to call `http://localhost:8000` for API requests.
+
 - ✅ **Works**: Local development (when API is on localhost:8000)
 - ❌ **Fails**: Production deployment (when app is on Fly.dev or other platform)
 
-**Error**: 
+**Error**:
+
 ```
 TypeError: Failed to fetch
   at fetchClaims (client/api/claims.ts:22:28)
 ```
 
 **Root Cause**: The `.env` file had:
+
 ```env
 VITE_API_BASE_URL=http://localhost:8000
 ```
@@ -28,7 +31,9 @@ When deployed to Fly.dev, the frontend tried to call a non-existent URL.
 ### 1. **Environment Configuration** (Most Important)
 
 #### Created `.env.development`
+
 For local development - uses relative API URLs
+
 ```env
 VITE_API_BASE_URL=/api          # ← Relative URL (works anywhere)
 PORT=8080
@@ -36,7 +41,9 @@ NODE_ENV=development
 ```
 
 #### Created `.env.production`
+
 For production deployment - uses relative API URLs
+
 ```env
 VITE_API_BASE_URL=/api          # ← Same as dev (works on same domain)
 PORT=8080
@@ -44,7 +51,9 @@ NODE_ENV=production
 ```
 
 #### Updated `.env`
+
 Global default configuration
+
 ```env
 VITE_API_BASE_URL=              # Empty = same domain
 PORT=8080
@@ -60,19 +69,21 @@ NODE_ENV=development
 **File**: `client/api/claims.ts`
 
 **Before**:
+
 ```typescript
-export const API_BASE_URL = 
+export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-  // Then: fetch(`${API_BASE_URL}/api/claims`)
-  // Results in: http://localhost:8000/api/claims ❌ FAILS IN PROD
+// Then: fetch(`${API_BASE_URL}/api/claims`)
+// Results in: http://localhost:8000/api/claims ❌ FAILS IN PROD
 ```
 
 **After**:
+
 ```typescript
 const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 export const API_BASE_URL = VITE_API_BASE.replace(/\/$/, "");
-  // Then: fetch(`${API_BASE_URL}/api/claims`)
-  // Results in: /api/claims ✅ WORKS EVERYWHERE
+// Then: fetch(`${API_BASE_URL}/api/claims`)
+// Results in: /api/claims ✅ WORKS EVERYWHERE
 ```
 
 **Why**: Empty string defaults to same domain, which works in production
@@ -84,6 +95,7 @@ export const API_BASE_URL = VITE_API_BASE.replace(/\/$/, "");
 **File**: `vite.config.ts`
 
 **Added**:
+
 ```typescript
 server: {
   proxy: {
@@ -108,6 +120,7 @@ server: {
 **File**: `server/index.ts`
 
 **Added**:
+
 - ✅ Improved CORS configuration with environment variables
 - ✅ Request logging for development debugging
 - ✅ Health check endpoints (`/health`, `/api/health`)
@@ -124,6 +137,7 @@ server: {
 **File**: `.gitignore`
 
 **Updated**:
+
 ```bash
 # Environment files
 .env.local              # Personal overrides (NOT committed)
@@ -137,22 +151,23 @@ server: {
 
 ## 📊 Before vs After Comparison
 
-| Aspect | Before ❌ | After ✅ |
-|--------|-----------|---------|
-| Local dev works? | Yes | Yes |
-| Production works? | No | Yes |
-| API URL hardcoded? | Yes | No |
-| Environment separation? | No | Yes |
-| Health checks? | No | Yes |
-| Error handling? | Basic | Comprehensive |
-| CORS config? | Basic | Configurable |
-| Git secrets safe? | No | Yes |
+| Aspect                  | Before ❌ | After ✅      |
+| ----------------------- | --------- | ------------- |
+| Local dev works?        | Yes       | Yes           |
+| Production works?       | No        | Yes           |
+| API URL hardcoded?      | Yes       | No            |
+| Environment separation? | No        | Yes           |
+| Health checks?          | No        | Yes           |
+| Error handling?         | Basic     | Comprehensive |
+| CORS config?            | Basic     | Configurable  |
+| Git secrets safe?       | No        | Yes           |
 
 ---
 
 ## 🚀 How It Works Now
 
 ### Development (pnpm dev)
+
 ```
 You open http://localhost:8080
     ↓
@@ -168,6 +183,7 @@ Frontend displays data ✅
 ```
 
 ### Production (deployed to Fly.io, etc.)
+
 ```
 You open https://your-app.fly.dev
     ↓
@@ -189,6 +205,7 @@ Frontend displays data ✅
 ## 📁 Files Created
 
 ### Documentation
+
 1. **QUICK_START.md** - Get running in 5 minutes
 2. **DEPLOYMENT.md** - Complete deployment guide (556 lines)
 3. **CONFIG_SUMMARY.md** - What was fixed and why
@@ -196,6 +213,7 @@ Frontend displays data ✅
 5. **FIXES_APPLIED.md** - This file
 
 ### Configuration
+
 1. **.env.development** - Local dev environment
 2. **.env.production** - Production environment
 3. **.gitignore** (updated) - Proper secret handling
@@ -213,6 +231,7 @@ Frontend displays data ✅
 5. **`.gitignore`** - Proper environment file handling
 
 ### Everything Else
+
 No changes needed! Your application structure is solid.
 
 ---
@@ -222,12 +241,14 @@ No changes needed! Your application structure is solid.
 Run these commands to verify everything works:
 
 ### Step 1: Type Check
+
 ```bash
 pnpm typecheck
 # Should output: (no errors)
 ```
 
 ### Step 2: Build
+
 ```bash
 pnpm build
 # Should complete successfully
@@ -235,6 +256,7 @@ pnpm build
 ```
 
 ### Step 3: Run Locally
+
 ```bash
 pnpm dev
 # Open http://localhost:8080
@@ -243,6 +265,7 @@ pnpm dev
 ```
 
 ### Step 4: Test API
+
 ```bash
 # In another terminal
 curl http://localhost:8080/api/health
@@ -252,6 +275,7 @@ curl http://localhost:8080/api/claims
 ```
 
 ### Step 5: Start Fresh Build
+
 ```bash
 pnpm build
 pnpm start
@@ -298,17 +322,20 @@ The fix is simple but critical: **use relative URLs (`/api`) instead of absolute
 ## 📞 Questions?
 
 ### The app doesn't load?
+
 1. Check terminal shows no TypeScript errors: `pnpm typecheck`
 2. Check dev server started: `pnpm dev` output should show "server running"
 3. Check browser console for errors
 4. Check Network tab for failed requests
 
 ### The API returns 404?
+
 1. Verify all routes in `server/index.ts` are registered
 2. Check the request URL in browser Network tab
 3. Test API directly: `curl http://localhost:8080/api/claims`
 
 ### Deployment fails?
+
 1. See the detailed platform guides in DEPLOYMENT.md
 2. Check build output: `pnpm build` should complete
 3. Read the platform-specific deployment guide for your choice
@@ -317,19 +344,20 @@ The fix is simple but critical: **use relative URLs (`/api`) instead of absolute
 
 ## 📚 Documentation Index
 
-| Document | Read This If... |
-|---|---|
-| **QUICK_START.md** | You want to get running NOW (5 min) |
-| **CONFIG_SUMMARY.md** | You want to understand what was fixed |
-| **DEPLOYMENT.md** | You're ready to deploy to production |
-| **REFERENCE.md** | You need detailed API documentation |
-| **FIXES_APPLIED.md** | You want a complete summary (this file) |
+| Document              | Read This If...                         |
+| --------------------- | --------------------------------------- |
+| **QUICK_START.md**    | You want to get running NOW (5 min)     |
+| **CONFIG_SUMMARY.md** | You want to understand what was fixed   |
+| **DEPLOYMENT.md**     | You're ready to deploy to production    |
+| **REFERENCE.md**      | You need detailed API documentation     |
+| **FIXES_APPLIED.md**  | You want a complete summary (this file) |
 
 ---
 
 ## 🎉 You're All Set!
 
 Your application is now:
+
 - ✅ Production-ready
 - ✅ Properly configured
 - ✅ Ready to deploy anywhere
@@ -337,4 +365,3 @@ Your application is now:
 - ✅ Secure (no hardcoded secrets)
 
 **Happy coding!** 🚀
-

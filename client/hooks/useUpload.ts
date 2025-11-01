@@ -34,7 +34,7 @@ export const useUpload = () => {
     async (formData: FormData) => {
       return mutation.mutate(formData);
     },
-    [mutation]
+    [mutation],
   );
 
   return {

@@ -3,6 +3,7 @@
 ## 📋 Quick Overview
 
 This is a full-stack application with:
+
 - **Frontend**: React 18 + TypeScript + Vite (SPA mode)
 - **Backend**: Express.js with mock data
 - **Database**: Currently using mock data (ready for real DB integration)
@@ -13,20 +14,24 @@ This is a full-stack application with:
 ## 🚀 Local Development Setup
 
 ### Prerequisites
+
 - Node.js 18+ or 20+
 - pnpm 10.14.0 (or npm/yarn)
 
 ### 1. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 2. Run Development Server
+
 ```bash
 pnpm dev
 ```
 
 This command:
+
 - Starts Vite dev server on `http://localhost:8080`
 - Integrates Express middleware for API routes
 - Enables hot reload for both frontend and backend
@@ -57,6 +62,7 @@ curl http://localhost:8080/api/queues
 ## 🔧 Configuration Files Explained
 
 ### `.env` (Global Default)
+
 ```env
 VITE_API_BASE_URL=          # Empty = same domain, or set to /api, or https://api.example.com
 PORT=8080                    # Server port for production
@@ -64,6 +70,7 @@ NODE_ENV=development         # development or production
 ```
 
 ### `.env.development` (Local Dev)
+
 ```env
 VITE_API_BASE_URL=/api       # API endpoints at /api/claims, /api/queues, etc
 PORT=8080
@@ -71,6 +78,7 @@ NODE_ENV=development
 ```
 
 ### `.env.production` (Deployed)
+
 ```env
 VITE_API_BASE_URL=/api       # Same as dev - frontend and backend on same domain
 PORT=8080                    # Will be overridden by hosting platform (Fly.io uses PORT)
@@ -79,19 +87,20 @@ NODE_ENV=production
 
 ### Key Configuration Points
 
-| Config File | Purpose | When Used |
-|---|---|---|
-| `vite.config.ts` | Frontend build config + dev server | npm run dev, npm run build |
-| `vite.config.server.ts` | Backend build config | npm run build:server |
-| `.env` files | Environment variables | All commands (sourced by dotenv) |
-| `package.json` | Scripts and dependencies | npm/pnpm commands |
-| `tsconfig.json` | TypeScript settings | Type checking |
+| Config File             | Purpose                            | When Used                        |
+| ----------------------- | ---------------------------------- | -------------------------------- |
+| `vite.config.ts`        | Frontend build config + dev server | npm run dev, npm run build       |
+| `vite.config.server.ts` | Backend build config               | npm run build:server             |
+| `.env` files            | Environment variables              | All commands (sourced by dotenv) |
+| `package.json`          | Scripts and dependencies           | npm/pnpm commands                |
+| `tsconfig.json`         | TypeScript settings                | Type checking                    |
 
 ---
 
 ## 📦 Build Commands
 
 ### Build for Production
+
 ```bash
 # Builds both frontend and backend
 pnpm build
@@ -102,6 +111,7 @@ pnpm build
 ```
 
 ### Build Output Structure
+
 ```
 dist/
 ├── spa/                    # Frontend (React SPA)
@@ -113,6 +123,7 @@ dist/
 ```
 
 ### Start Production Server
+
 ```bash
 pnpm start
 
@@ -129,6 +140,7 @@ pnpm start
 ### Deploy to Fly.io (Recommended)
 
 #### 1. Install Fly CLI
+
 ```bash
 # macOS with Homebrew
 brew install flyctl
@@ -137,6 +149,7 @@ brew install flyctl
 ```
 
 #### 2. Initialize Fly App
+
 ```bash
 fly launch
 
@@ -149,13 +162,14 @@ fly launch
 ```
 
 #### 3. Configure `fly.toml`
+
 ```toml
 app = "your-app-name"
 primary_region = "us-west"
 
 [build]
   builder = "paketobuildpacks"
-  
+
 [env]
   NODE_ENV = "production"
   VITE_API_BASE_URL = "/api"
@@ -163,17 +177,18 @@ primary_region = "us-west"
 [[services]]
   internal_port = 8080
   processes = ["app"]
-  
+
   [[services.ports]]
     port = 80
     handlers = ["http"]
-    
+
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
 ```
 
 #### 4. Deploy
+
 ```bash
 fly deploy
 
@@ -189,11 +204,13 @@ fly open
 ### Deploy to Vercel
 
 #### 1. Push to GitHub
+
 ```bash
 git push origin main
 ```
 
 #### 2. Go to Vercel Dashboard
+
 - Import your repository
 - Select "Other" as framework
 - Configure build settings:
@@ -201,13 +218,16 @@ git push origin main
   - **Output Directory**: `dist/spa`
 
 #### 3. Add Environment Variables
+
 In Vercel dashboard → Settings → Environment Variables:
+
 ```
 VITE_API_BASE_URL = /api
 NODE_ENV = production
 ```
 
 #### 4. Deploy
+
 Vercel will automatically deploy on push
 
 **Note**: This approach only deploys the frontend. You need a separate backend service.
@@ -217,24 +237,30 @@ Vercel will automatically deploy on push
 ### Deploy to Netlify
 
 #### 1. Connect GitHub
+
 - Go to Netlify
 - Create new site from Git
 - Select your repository
 
 #### 2. Configure Build Settings
+
 In Site Settings → Build & Deploy:
+
 - **Build command**: `pnpm build && pnpm build:server`
 - **Publish directory**: `dist/spa`
 - **Functions directory**: (leave empty or use `netlify/functions`)
 
 #### 3. Add Environment Variables
+
 Site Settings → Build Environment:
+
 ```
 VITE_API_BASE_URL = /api
 NODE_ENV = production
 ```
 
 #### 4. Deploy
+
 Push to GitHub and Netlify will auto-deploy
 
 ---
@@ -242,16 +268,20 @@ Push to GitHub and Netlify will auto-deploy
 ### Deploy to Render.com
 
 #### 1. Create New Web Service
+
 - Dashboard → Create → Web Service
 - Connect GitHub repository
 
 #### 2. Configure Service
+
 - **Environment**: Node
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `pnpm start`
 
 #### 3. Add Environment Variables
+
 Settings → Environment:
+
 ```
 NODE_ENV = production
 VITE_API_BASE_URL = /api
@@ -259,6 +289,7 @@ PORT = 8080 (Render will override this)
 ```
 
 #### 4. Deploy
+
 Click Deploy - Render will build and start the app
 
 ---
@@ -266,16 +297,21 @@ Click Deploy - Render will build and start the app
 ### Deploy to Railway.app
 
 #### 1. Create New Project
+
 - New Project → GitHub Repo
 - Select your repository
 
 #### 2. Configure
+
 Railway auto-detects Node.js:
+
 - **Start Command**: `pnpm start`
 - **Build Command**: `pnpm build`
 
 #### 3. Add Variables
+
 Variables tab:
+
 ```
 NODE_ENV = production
 VITE_API_BASE_URL = /api
@@ -283,6 +319,7 @@ PORT = 8080
 ```
 
 #### 4. Deploy
+
 Railway auto-deploys
 
 ---
@@ -294,6 +331,7 @@ Railway auto-deploys
 All endpoints are relative URLs (assuming same domain):
 
 #### Claims
+
 ```
 GET    /api/claims                    # List all claims
 GET    /api/claims?limit=25&offset=0  # With pagination
@@ -303,11 +341,13 @@ POST   /api/claims/:id/reassign       # Reassign claim
 ```
 
 #### Queues
+
 ```
 GET    /api/queues                    # List all queues
 ```
 
 #### Health Checks
+
 ```
 GET    /health                        # Server health
 GET    /api/health                    # API health
@@ -326,7 +366,7 @@ GET    /api/ping                      # Ping endpoint
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 // API calls are made as:
-fetch(`${API_BASE_URL}/api/claims`) // Results in /api/claims
+fetch(`${API_BASE_URL}/api/claims`); // Results in /api/claims
 ```
 
 ### Example: Adding Real Database
@@ -351,29 +391,33 @@ export const fetchClaims: RequestHandler = async (req, res) => {
 ## 🔐 Environment Variables Reference
 
 ### Required Variables
-| Variable | Description | Example |
-|---|---|---|
-| `NODE_ENV` | Production or development | `production` |
-| `VITE_API_BASE_URL` | API base URL | `/api` or `https://api.example.com` |
-| `PORT` | Server port | `8080` |
+
+| Variable            | Description               | Example                             |
+| ------------------- | ------------------------- | ----------------------------------- |
+| `NODE_ENV`          | Production or development | `production`                        |
+| `VITE_API_BASE_URL` | API base URL              | `/api` or `https://api.example.com` |
+| `PORT`              | Server port               | `8080`                              |
 
 ### Optional Variables
-| Variable | Description | Default |
-|---|---|---|
-| `ALLOWED_ORIGINS` | CORS origins (comma-separated) | `*` |
-| `PING_MESSAGE` | Message for /api/ping | `pong` |
-| `DATABASE_URL` | Database connection | (none) |
-| `JWT_SECRET` | JWT signing key | (none) |
+
+| Variable          | Description                    | Default |
+| ----------------- | ------------------------------ | ------- |
+| `ALLOWED_ORIGINS` | CORS origins (comma-separated) | `*`     |
+| `PING_MESSAGE`    | Message for /api/ping          | `pong`  |
+| `DATABASE_URL`    | Database connection            | (none)  |
+| `JWT_SECRET`      | JWT signing key                | (none)  |
 
 ### Adding Sensitive Variables (Production)
 
 For Fly.io:
+
 ```bash
 fly secrets set DATABASE_URL="postgresql://..."
 fly secrets set JWT_SECRET="your-secret-key"
 ```
 
 For Vercel/Netlify:
+
 ```
 Settings → Environment Variables → (add your secrets)
 ```
@@ -387,6 +431,7 @@ Settings → Environment Variables → (add your secrets)
 **Cause**: Frontend is trying to call wrong API URL
 
 **Solution**:
+
 1. Check `.env.production` has `VITE_API_BASE_URL=/api`
 2. Verify backend is serving API routes
 3. Check browser console for actual request URLs
@@ -403,6 +448,7 @@ curl https://your-deployed-app.com/api/claims
 **Cause**: CORS not properly configured
 
 **Solution**:
+
 1. Check `server/index.ts` has proper CORS config
 2. For development, CORS should allow all (`*`)
 3. For production, set `ALLOWED_ORIGINS` env var:
@@ -416,6 +462,7 @@ ALLOWED_ORIGINS="https://your-domain.com,https://another-domain.com"
 **Likely Cause**: Hardcoded API URL pointing to localhost
 
 **Check Files**:
+
 - `client/api/claims.ts` - should use `VITE_API_BASE_URL`
 - `.env.production` - should set `VITE_API_BASE_URL=/api`
 
@@ -469,39 +516,47 @@ app.get("*", (req, res) => {
 ## 🛠️ Development Tips
 
 ### Hot Reload
+
 Changes to frontend and backend code automatically reload in dev mode:
+
 ```bash
 pnpm dev
 ```
 
 ### TypeScript Checking
+
 ```bash
 pnpm typecheck
 # Or in VSCode: Ctrl+Shift+B → Select TypeScript task
 ```
 
 ### Run Tests
+
 ```bash
 pnpm test
 ```
 
 ### Format Code
+
 ```bash
 pnpm format.fix
 ```
 
 ### View Server Logs (Fly.io)
+
 ```bash
 fly logs
 fly logs -a your-app-name
 ```
 
 ### SSH into Production App (Fly.io)
+
 ```bash
 fly ssh console
 ```
 
 ### View Environment Variables (Fly.io)
+
 ```bash
 fly config show
 fly env display
@@ -512,22 +567,29 @@ fly env display
 ## 📞 Common Questions
 
 ### Q: Can I use a different database?
+
 **A**: Yes! Replace mock data in `server/routes/claims.ts` with your DB queries (PostgreSQL, MongoDB, etc.)
 
 ### Q: How do I add authentication?
+
 **A**: Add middleware in `server/index.ts`:
+
 ```typescript
 app.use("/api/protected", authMiddleware);
 ```
 
 ### Q: How do I enable HTTPS?
+
 **A**: Most platforms (Fly.io, Vercel, Netlify) provide free HTTPS. Just point your domain.
 
 ### Q: Can I run frontend and backend separately?
+
 **A**: Yes, set `VITE_API_BASE_URL=https://api.example.com` in `.env.production`
 
 ### Q: How do I monitor the app?
-**A**: 
+
+**A**:
+
 - Fly.io: `fly logs` and dashboard
 - Vercel: Vercel Analytics and dashboard
 - Netlify: Netlify Analytics and logs
@@ -552,4 +614,3 @@ app.use("/api/protected", authMiddleware);
 - Express Docs: https://expressjs.com/
 - Vite Docs: https://vitejs.dev/
 - React Docs: https://react.dev/
-

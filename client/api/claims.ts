@@ -71,7 +71,7 @@ export const fetchClaims = async (params: FetchClaimsParams = {}) => {
   if (params.search) queryParams.append("search", params.search);
 
   const response = await fetch(
-    `${API_BASE_URL}/api/claims?${queryParams.toString()}`
+    `${API_BASE_URL}/api/claims?${queryParams.toString()}`,
   );
 
   if (!response.ok) {

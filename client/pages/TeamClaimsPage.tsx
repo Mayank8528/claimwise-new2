@@ -28,8 +28,8 @@ const TeamClaimsPage = () => {
     onClaimUpdated: (updatedClaim) => {
       setClaims((prev) =>
         prev.map((claim) =>
-          claim.id === updatedClaim.id ? updatedClaim : claim
-        )
+          claim.id === updatedClaim.id ? updatedClaim : claim,
+        ),
       );
     },
   });
